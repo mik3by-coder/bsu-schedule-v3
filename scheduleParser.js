@@ -125,10 +125,10 @@ function parseSchedule(html) {
     });
   });
 
-  // The BSU source publishes start times only. For starts that are part of the
-  // supplied official timetable, use the timetable's exact pair-end. For other
-  // special-event starts (e.g. 09:30 or 11:00), keep the previous safe 90-minute
-  // fallback because the source page itself does not provide an end time.
+  // The BSU source publishes start times only. For standard pair starts, use the
+  // full pair end from the supplied official timetable. For exceptional starts
+  // (e.g. 09:30 or 11:00), keep the 90-minute fallback because the source page
+  // itself does not provide an end time.
   for (const date of [...new Set(schedule.map(item => item.date))]) {
     const lessons = schedule
       .filter(item => item.date === date)
@@ -137,15 +137,19 @@ function parseSchedule(html) {
     for (let i = 0; i < lessons.length; i += 1) {
       const lesson = lessons[i];
       const regime = START_TO_REGIME.get(lesson.start);
-      const nominalEnd = regime ? timeToMinutes(regime.end) : timeToMinutes(lesson.start) + 90;
+      // The BSU source gives the start of a pair. A standard pair spans both
+      // 40-minute parts with the 5-minute internal break, so its end is the
+      // second part's end (for example 08:30 -> 09:55).
+      const pair = regime ? REGIME.find(item => item.number === regime.number) : null;
+      const nominalEnd = pair
+        ? timeToMinutes(pair.parts[1][1])
+        : timeToMinutes(lesson.start) + 90;
+
       const nextDistinctStart = lessons
         .slice(i + 1)
         .map(item => timeToMinutes(item.start))
         .find(minutes => minutes > timeToMinutes(lesson.start));
 
-      // Never let a known standard pair extend into the next scheduled start.
-      // For an exceptional start time we keep the old 90-minute fallback, also
-      // shortened if another class starts earlier.
       const endMinutes = Math.min(nominalEnd, nextDistinctStart ?? nominalEnd);
       lesson.end = minutesToTime(endMinutes);
     }

@@ -218,46 +218,141 @@ function currentSourceSlot(){
   let active=null,next=null;
   for(const slot of slots){
     const s=timeToEpoch(slot.date,slot.start),e=timeToEpoch(slot.date,slot.end);
-    if(s<=now&&now<e){active={...slot,startMs:s,endMs:e};break}
-    if(s>now&&!next)next={...slot,startMs:s,endMs:e};
+    if(s<=now&&now<e){active={...slot,startMs:s,endMs:e};}
+    else if(s>now&&!next){next={...slot,startMs:s,endMs:e};}
   }
   return {active,next};
 }
 
-function renderFocus(){
-  const regime=getRegimeState(), today=todayKey(), now=Date.now(), source=currentSourceSlot();
-  const main=document.getElementById('state'), timer=document.getElementById('count'), label=document.getElementById('countLabel');
-  const focusName=document.getElementById('focusName'),focusKicker=document.getElementById('focusKicker'),focusItems=document.getElementById('focusItems');
-  document.getElementById('transitionStart').textContent=regime.start||'—';
-  document.getElementById('transitionEnd').textContent=regime.end||'—';
-  document.getElementById('periodBadge').textContent=regime.pair?`${regime.pair}-я пара${regime.part?` · ${regime.part}-я часть`:''}`:'—';
-  const target=regime.countTo?timeToEpoch(today,regime.countTo):now;
-  timer.textContent=formatDuration(Math.max(0,target-now));
-  label.textContent=regime.label||'—';
-  main.className=`state ${regime.type==='break'?'breaking':regime.type==='done'?'done':''}`;
+function nextScheduledSlotAfter(nowMs){
+  const slots=groupSlots(state.schedule.filter(subgroupAllowed));
+  return slots.find(slot=>timeToEpoch(slot.date,slot.start)>nowMs)||null;
+}
 
-  if(source.active){
-    focusKicker.textContent='Сейчас по расписанию БГУ';
-    focusName.textContent=source.active.discipline;
-    focusItems.innerHTML=source.active.lessons.map(lesson=>`${lesson.subgroup?`<div class="focus-line">${escapeHtml(lesson.subgroup)}</div>`:''}<div class="focus-line">👤 ${escapeHtml(lesson.teacher)}</div><div class="focus-line muted">📍 ${escapeHtml(lesson.room)}</div>`).join('');
-  }else if(regime.type==='break'){
-    focusKicker.textContent='Перерыв';
-    if(source.next){
-      focusName.textContent=`Следующая: ${source.next.discipline}`;
-      focusItems.innerHTML=source.next.lessons.map(lesson=>`${lesson.subgroup?`<div class="focus-line">${escapeHtml(lesson.subgroup)}</div>`:''}<div class="focus-line">Начало · ${escapeHtml(source.next.start)}</div><div class="focus-line">👤 ${escapeHtml(lesson.teacher)}</div><div class="focus-line muted">📍 ${escapeHtml(lesson.room)}</div>`).join('');
-    }else{focusName.textContent='Следующая пара';focusItems.innerHTML='<div class="focus-line muted">По данным БГУ следующего занятия пока нет.</div>'}
-  }else if(source.next){
-    focusKicker.textContent='Следующее занятие по БГУ';
-    focusName.textContent=source.next.discipline;
-    focusItems.innerHTML=source.next.lessons.map(lesson=>`${lesson.subgroup?`<div class="focus-line">${escapeHtml(lesson.subgroup)}</div>`:''}<div class="focus-line">Начало · ${escapeHtml(source.next.start)}</div><div class="focus-line">👤 ${escapeHtml(lesson.teacher)}</div><div class="focus-line muted">📍 ${escapeHtml(lesson.room)}</div>`).join('');
-  }else{
-    focusKicker.textContent=regime.type==='done'?'Сегодня':'Режим учебных занятий';
-    focusName.textContent=regime.type==='done'?'На сегодня занятий больше нет':'В выбранный период нет занятия';
-    focusItems.innerHTML='<div class="focus-line muted">Таймер продолжает работать по официальному режиму занятий.</div>';
+function regimeStateForActiveSlot(slot){
+  const regime=regimeForStart(slot.start);
+  if(!regime){
+    return {type:'lesson',label:'до конца занятия',start:slot.start,end:slot.end,target:timeToEpoch(slot.date,slot.end),pair:null,part:null};
   }
 
-  // The right panel uses the exact regime timer; the lesson list remains the source
-  // of truth for subjects, teachers and rooms coming from BSU.
+  const t=nowMinutes();
+  const pair=regime.pair;
+  const p1=pair.parts[0], p2=pair.parts[1];
+  const p1s=mins(p1[0]), p1e=mins(p1[1]), p2s=mins(p2[0]), p2e=mins(p2[1]);
+
+  if(t>=p1s&&t<p1e){
+    return {type:'lesson',label:'до 5-минутного перерыва',start:p1[0],end:p1[1],target:timeToEpoch(slot.date,p1[1]),pair:pair.number,part:1};
+  }
+  if(t>=p1e&&t<p2s){
+    return {type:'break',label:'до конца 5-минутного перерыва',start:p1[1],end:p2[0],target:timeToEpoch(slot.date,p2[0]),pair:pair.number,part:1};
+  }
+  if(t>=p2s&&t<p2e){
+    return {type:'lesson',label:'до конца пары',start:p2[0],end:p2[1],target:timeToEpoch(slot.date,p2[1]),pair:pair.number,part:2};
+  }
+
+  return {type:'lesson',label:'до конца занятия',start:slot.start,end:slot.end,target:timeToEpoch(slot.date,slot.end),pair:pair.number,part:null};
+}
+
+function regimeBreakAtCurrentTime(nextToday){
+  const t=nowMinutes();
+  for(const pair of REGIME){
+    const p1e=mins(pair.parts[0][1]), p2s=mins(pair.parts[1][0]);
+    if(t>=p1e&&t<p2s && nextToday && nextToday.start===pair.parts[1][0]){
+      return {type:'break',label:'до конца 5-минутного перерыва',start:pair.parts[0][1],end:pair.parts[1][0],target:timeToEpoch(nextToday.date,pair.parts[1][0]),pair:pair.number,part:1};
+    }
+    if(pair.breakToNext){
+      const bs=mins(pair.breakToNext[0]), be=mins(pair.breakToNext[1]);
+      if(t>=bs&&t<be && nextToday && nextToday.start===pair.breakToNext[1]){
+        return {type:'break',label:'до конца перерыва',start:pair.breakToNext[0],end:pair.breakToNext[1],target:timeToEpoch(nextToday.date,pair.breakToNext[1]),pair:pair.number,part:2};
+      }
+    }
+  }
+  return null;
+}
+
+function getTimerState(){
+  const now=Date.now();
+  const source=currentSourceSlot();
+
+  if(source.active){
+    const activeState=regimeStateForActiveSlot(source.active);
+    return {...activeState,active:source.active,next:source.next};
+  }
+
+  const breakState=regimeBreakAtCurrentTime(source.next);
+  if(breakState){
+    return {...breakState,active:null,next:source.next};
+  }
+
+  if(source.next){
+    return {
+      type:'waiting',
+      label:'до следующей пары',
+      start:source.next.start,
+      end:source.next.end,
+      target:source.next.startMs,
+      pair:regimeForStart(source.next.start)?.pair.number||null,
+      part:null,
+      active:null,
+      next:source.next
+    };
+  }
+
+  const nextFuture=nextScheduledSlotAfter(now);
+  if(nextFuture){
+    const futureDate=fmtDate(nextFuture.date,{weekday:'short',day:'2-digit',month:'2-digit'});
+    return {
+      type:'next-day',
+      label:`до следующей пары · ${futureDate}`,
+      start:nextFuture.start,
+      end:nextFuture.end,
+      target:timeToEpoch(nextFuture.date,nextFuture.start),
+      pair:regimeForStart(nextFuture.start)?.pair.number||null,
+      part:null,
+      active:null,
+      next:nextFuture
+    };
+  }
+
+  return {type:'done',label:'занятий в расписании больше нет',start:'—',end:'—',target:now,pair:null,part:null,active:null,next:null};
+}
+
+function renderFocus(){
+  const timerState=getTimerState();
+  const main=document.getElementById('state'), timer=document.getElementById('count'), label=document.getElementById('countLabel');
+  const focusName=document.getElementById('focusName'),focusKicker=document.getElementById('focusKicker'),focusItems=document.getElementById('focusItems');
+
+  document.getElementById('transitionStart').textContent=timerState.start||'—';
+  document.getElementById('transitionEnd').textContent=timerState.end||'—';
+  document.getElementById('periodBadge').textContent=timerState.pair?`${timerState.pair}-я пара${timerState.part?` · ${timerState.part}-я часть`:''}`:'—';
+
+  const remaining=Math.max(0,timerState.target-Date.now());
+  timer.textContent=timerState.type==='done'?'—':formatDuration(remaining);
+  label.textContent=timerState.label||'—';
+
+  let stateText='ОЖИДАНИЕ';
+  if(timerState.type==='lesson') stateText=timerState.active?'СЕЙЧАС':'ЗАНЯТИЕ';
+  else if(timerState.type==='break') stateText='ПЕРЕРЫВ';
+  else if(timerState.type==='waiting') stateText='СЛЕДУЮЩАЯ ПАРА';
+  else if(timerState.type==='next-day') stateText='СЛЕДУЮЩИЙ ДЕНЬ';
+  else if(timerState.type==='done') stateText='ГОТОВО';
+
+  main.textContent=stateText;
+  main.className=`state ${timerState.type==='break'?'breaking':timerState.type==='done'?'done':''}`;
+
+  if(timerState.active){
+    focusKicker.textContent=timerState.type==='break'?'Перерыв внутри пары':'Сейчас по расписанию БГУ';
+    focusName.textContent=timerState.active.discipline;
+    focusItems.innerHTML=timerState.active.lessons.map(lesson=>`${lesson.subgroup?`<div class="focus-line">${escapeHtml(lesson.subgroup)}</div>`:''}<div class="focus-line">👤 ${escapeHtml(lesson.teacher)}</div><div class="focus-line muted">📍 ${escapeHtml(lesson.room)}</div>`).join('');
+  }else if(timerState.next){
+    focusKicker.textContent='Следующее занятие по БГУ';
+    focusName.textContent=timerState.next.discipline;
+    focusItems.innerHTML=timerState.next.lessons.map(lesson=>`${lesson.subgroup?`<div class="focus-line">${escapeHtml(lesson.subgroup)}</div>`:''}<div class="focus-line">Начало · ${escapeHtml(timerState.next.start)} · ${escapeHtml(fmtDate(timerState.next.date,{weekday:'short',day:'2-digit',month:'2-digit'}))}</div><div class="focus-line">👤 ${escapeHtml(lesson.teacher)}</div><div class="focus-line muted">📍 ${escapeHtml(lesson.room)}</div>`).join('');
+  }else{
+    focusKicker.textContent='Сегодня';
+    focusName.textContent='На сегодня и дальше занятий нет';
+    focusItems.innerHTML='<div class="focus-line muted">В загруженном расписании больше нет будущих занятий.</div>';
+  }
 }
 
 function renderUpcoming(){
