@@ -1,0 +1,316 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#080a0e">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="manifest" href="/manifest.webmanifest">
+<title>BSU Schedule · 614 (Engl)</title>
+<style>
+:root{
+  --bg:#080a0e;--panel:#11151b;--panel-2:#151a22;--panel-3:#0d1116;--line:#252c36;
+  --text:#f4f6f9;--soft:#cbd3de;--muted:#8f99a7;--accent:#92a8ff;--good:#71d6a1;
+  --break:#ffd27a;--danger:#ff8f8f;--shadow:0 18px 48px rgba(0,0,0,.24)
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;min-height:100vh;background:radial-gradient(1100px 540px at 50% -170px,#252e41 0,#080a0e 67%);color:var(--text);font:15px/1.48 Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;-webkit-font-smoothing:antialiased}
+button,select{font:inherit}
+button{touch-action:manipulation}
+.wrap{width:min(1240px,100%);margin:0 auto;padding:24px 18px 56px}
+header{display:flex;justify-content:space-between;align-items:flex-end;gap:24px;margin-bottom:18px}
+.kicker{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.15em}
+.title{font-size:40px;font-weight:900;letter-spacing:-.05em;margin:3px 0 4px}
+.date{font-size:14px;color:var(--muted)}
+.header-right{text-align:right;min-width:250px}.clock strong{font-size:28px;letter-spacing:-.03em;font-variant-numeric:tabular-nums}.sync{margin-top:5px;color:var(--muted);font-size:11px}.sync-dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--good);margin-right:6px}.sync-dot.stale{background:var(--break)}.sync-dot.error{background:var(--danger)}
+.toolbar{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:10px}.week-nav{display:flex;align-items:center;gap:10px}.week-title{font-size:14px;color:var(--soft);font-weight:800;min-width:210px;text-align:center}.tool-btn{height:40px;padding:0 13px;border:1px solid var(--line);border-radius:12px;background:#10141a;color:var(--text);cursor:pointer}.tool-btn:hover{border-color:#394454}.refresh-spin{animation:spin .8s linear infinite}@keyframes spin{to{transform:rotate(360deg)}}
+.day-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:10px;margin-bottom:12px}.day{min-width:0;text-align:left;padding:13px 12px;border:1px solid var(--line);border-radius:16px;background:#0f1318;color:var(--muted);cursor:pointer;transition:.16s ease;border-top:2px solid transparent}.day:hover{transform:translateY(-1px);border-color:#384250}.day.active{background:#1a2130;border-color:#425374;color:var(--text);border-top-color:var(--accent)}.day.today{border-top-color:var(--good)}.day.active.today{border-top-color:var(--accent)}.day b{display:block;text-transform:capitalize;font-size:13px}.day-date{display:block;font-size:15px;font-weight:800;margin-top:2px;color:var(--text);font-variant-numeric:tabular-nums}.day-meta{display:flex;justify-content:space-between;gap:8px;margin-top:8px;font-size:10px;color:var(--muted)}
+.filters{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:14px}.filter-label{color:var(--muted);font-size:12px}.select{height:40px;border:1px solid var(--line);border-radius:12px;background:#10141a;color:var(--text);padding:0 32px 0 12px}
+.layout{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(330px,.75fr);gap:18px;align-items:start}.card{background:rgba(17,21,27,.96);border:1px solid var(--line);border-radius:22px;padding:18px;box-shadow:var(--shadow)}
+.section-head{display:flex;justify-content:space-between;align-items:flex-end;gap:12px;margin-bottom:10px}.section-head h2,.side-heading{font-size:17px;margin:0;font-weight:850}.section-sub{font-size:12px;color:var(--muted);text-align:right}
+.lesson-list{display:flex;flex-direction:column;gap:8px}.lesson{display:grid;grid-template-columns:92px minmax(0,1fr);gap:14px;padding:15px;border:1px solid var(--line);border-radius:16px;background:var(--panel-3);transition:.16s ease}.lesson:hover{border-color:#35404e}.lesson.current{border-color:#345844;background:linear-gradient(180deg,rgba(25,43,35,.68),rgba(14,23,19,.86))}.lesson.next{border-color:#3d4960}.time{font-weight:900;font-variant-numeric:tabular-nums;letter-spacing:-.03em}.time-main{font-size:18px}.time small{display:block;color:var(--muted);font-weight:600;font-size:11px;margin-top:3px}.name{font-weight:820;font-size:16px;letter-spacing:-.012em;overflow-wrap:anywhere}.teacher{color:var(--soft);font-size:13px;margin-top:6px;overflow-wrap:anywhere}.meta{color:var(--muted);font-size:13px;margin-top:4px;overflow-wrap:anywhere}.subgroup{display:inline-flex;margin-top:7px;padding:4px 8px;border-radius:9px;background:#18202a;color:#bac3cf;font-size:11px}.lesson-badges{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}.badge{display:inline-flex;align-items:center;min-height:22px;padding:2px 7px;border-radius:999px;font-size:10px;font-weight:800;letter-spacing:.03em}.badge.now{background:#1d3f30;color:#8ee0b8}.badge.next{background:#222f45;color:#a7bcff}.badge.period{background:#1a2028;color:#aeb8c5}
+.foot{margin-top:13px;padding-top:12px;border-top:1px solid var(--line);color:var(--muted);font-size:11px}
+.side-stack{display:flex;flex-direction:column;gap:14px}.current-card{border:1px solid #2f3742;border-radius:20px;background:linear-gradient(180deg,rgba(20,25,33,.98),rgba(13,17,22,.98));padding:16px}.state-row{display:flex;justify-content:space-between;align-items:center;gap:10px}.state{font-size:11px;color:var(--accent);font-weight:900;text-transform:uppercase;letter-spacing:.09em}.state.breaking{color:var(--break)}.state.done{color:var(--muted)}.timer{font-size:42px;font-weight:950;letter-spacing:-.055em;font-variant-numeric:tabular-nums;margin-top:5px}.timer-label{font-size:12px;color:var(--muted);margin-bottom:14px}.transition{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px}.transition-box{padding:10px 11px;border:1px solid var(--line);border-radius:13px;background:#0d1116}.transition-label{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.07em}.transition-value{font-size:13px;font-weight:800;margin-top:3px;font-variant-numeric:tabular-nums}.focus-card{padding-top:14px;border-top:1px solid var(--line)}.focus-kicker{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em}.focus-name{font-weight:850;font-size:17px;margin-top:3px;overflow-wrap:anywhere}.focus-line{font-size:13px;color:var(--soft);margin-top:5px;overflow-wrap:anywhere}.focus-line.muted{color:var(--muted)}
+.upcoming{border-top:1px solid var(--line);padding-top:14px}.side-heading{margin-bottom:7px}.upcoming-item{display:grid;grid-template-columns:66px minmax(0,1fr);gap:10px;padding:11px 0;border-top:1px solid var(--line)}.upcoming-item:first-child{border-top:0}.up-date{color:var(--muted);font-size:10px;font-weight:800;text-transform:capitalize}.up-time{font-size:13px;font-weight:900;font-variant-numeric:tabular-nums}.up-name{font-weight:760;font-size:13px;overflow-wrap:anywhere}.up-meta{color:var(--muted);font-size:11px;margin-top:3px;overflow-wrap:anywhere}
+.regime{border-top:1px solid var(--line);padding-top:14px}.regime-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px}.regime-row{display:grid;grid-template-columns:24px 1fr;gap:7px;padding:8px;border:1px solid var(--line);border-radius:11px;background:#0d1116}.regime-num{font-size:11px;color:var(--muted);font-weight:900}.regime-times{font-size:11px;font-variant-numeric:tabular-nums}.status-row{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-top:12px;color:var(--muted);font-size:10px}.error-text{color:var(--danger);margin-top:8px;font-size:11px;overflow-wrap:anywhere}
+.hidden{display:none!important}
+@media(min-width:901px){aside{position:sticky;top:16px}}
+@media(max-width:1000px){.day-grid{grid-template-columns:repeat(4,minmax(0,1fr))}.layout{grid-template-columns:1fr}.side-stack{display:grid;grid-template-columns:1fr 1fr}.current-card{grid-column:1/-1}aside{order:-1}.regime-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:700px){
+  body{background:#080a0e}.wrap{padding:12px 10px 34px}header{align-items:flex-start;margin-bottom:10px}.title{font-size:31px}.date{font-size:12px}.header-right{display:none}
+  .toolbar{align-items:stretch;flex-direction:column;gap:8px}.week-nav{justify-content:space-between}.week-title{min-width:0;flex:1}.tool-btn{width:100%}
+  .day-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-bottom:9px}.day{padding:11px;border-radius:14px}.day b{font-size:12px}.day-date{font-size:14px}.day-meta{font-size:9px;margin-top:6px}
+  .filters{margin-bottom:9px}.card{padding:13px;border-radius:18px}.layout{gap:10px}.side-stack{display:flex}.lesson{grid-template-columns:73px minmax(0,1fr);gap:10px;padding:12px;border-radius:14px}.time-main{font-size:16px}.name{font-size:15px}.teacher,.meta{font-size:12px}.section-head{align-items:flex-start}.section-sub{max-width:170px}.current-card{padding:14px}.timer{font-size:36px}.transition{grid-template-columns:1fr 1fr}.focus-name{font-size:16px}.regime-grid{grid-template-columns:1fr}.upcoming-item{grid-template-columns:61px minmax(0,1fr)}
+}
+@media(max-width:390px){.day-grid{grid-template-columns:1fr}.day-meta{font-size:10px}.lesson{grid-template-columns:66px minmax(0,1fr)}.timer{font-size:32px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <div>
+    <div class="kicker" id="groupKicker">BSU · 614 (Engl)</div>
+    <div class="title">Расписание</div>
+    <div class="date" id="date">Загрузка…</div>
+  </div>
+  <div class="header-right">
+    <div class="clock"><div class="kicker">Время БГУ</div><strong id="clock">--:--:--</strong></div>
+    <div class="sync"><span class="sync-dot" id="syncDot"></span><span id="syncText">Синхронизация…</span></div>
+  </div>
+</header>
+
+<div class="toolbar">
+  <div class="week-nav">
+    <button class="tool-btn" id="prev" type="button" aria-label="Предыдущая неделя">←</button>
+    <div class="week-title" id="week">Текущая неделя</div>
+    <button class="tool-btn" id="next" type="button" aria-label="Следующая неделя">→</button>
+  </div>
+  <button class="tool-btn" id="refresh" type="button">↻ Обновить</button>
+</div>
+
+<div class="day-grid" id="days" aria-label="Дни недели"></div>
+
+<div class="filters">
+  <span class="filter-label">Подгруппа:</span>
+  <select class="select" id="subgroup" aria-label="Выбор подгруппы">
+    <option value="all">Все</option>
+    <option value="1 подгр">1 подгр</option>
+    <option value="2 подгр">2 подгр</option>
+  </select>
+</div>
+
+<main class="layout">
+  <section class="card">
+    <div class="section-head">
+      <h2 id="dayTitle">Занятия</h2>
+      <div class="section-sub" id="daySub">—</div>
+    </div>
+    <div class="lesson-list" id="lessons"><div class="empty">Загрузка расписания…</div></div>
+    <div class="foot">Названия дисциплин, преподаватели, аудитории и подгруппы берутся из исходной таблицы БГУ без ручного переименования.</div>
+  </section>
+
+  <aside class="card">
+    <div class="side-stack">
+      <div class="current-card">
+        <div class="state-row"><div class="state" id="state">Загрузка</div><div class="badge period" id="periodBadge">—</div></div>
+        <div class="timer" id="count">—</div>
+        <div class="timer-label" id="countLabel">—</div>
+        <div class="transition">
+          <div class="transition-box"><div class="transition-label">Начало</div><div class="transition-value" id="transitionStart">—</div></div>
+          <div class="transition-box"><div class="transition-label">Конец</div><div class="transition-value" id="transitionEnd">—</div></div>
+        </div>
+        <div class="focus-card">
+          <div class="focus-kicker" id="focusKicker">Сейчас</div>
+          <div class="focus-name" id="focusName">Нет данных</div>
+          <div id="focusItems"></div>
+        </div>
+      </div>
+
+      <div class="upcoming">
+        <div class="side-heading">Ближайшие занятия</div>
+        <div id="upcoming"></div>
+      </div>
+
+      <div class="regime">
+        <div class="side-heading">Режим учебных занятий</div>
+        <div class="regime-grid" id="regimeGrid"></div>
+      </div>
+    </div>
+
+    <div class="status-row"><span id="sourceStatus">Источник: БГУ</span><span id="sourceUpdated">—</span></div>
+    <div class="error-text hidden" id="syncError"></div>
+  </aside>
+</main>
+</div>
+
+<script>
+const REGIME=[
+ {number:1,parts:[['08:30','09:10'],['09:15','09:55']],breakToNext:['09:55','10:10']},
+ {number:2,parts:[['10:10','10:50'],['10:55','11:35']],breakToNext:['11:35','12:05']},
+ {number:3,parts:[['12:05','12:45'],['12:50','13:30']],breakToNext:['13:30','13:40']},
+ {number:4,parts:[['13:40','14:20'],['14:25','15:05']],breakToNext:['15:05','15:15']},
+ {number:5,parts:[['15:15','15:55'],['16:00','16:40']],breakToNext:['16:40','17:00']},
+ {number:6,parts:[['17:00','17:40'],['17:45','18:25']],breakToNext:['18:25','18:35']},
+ {number:7,parts:[['18:35','19:15'],['19:20','20:00']],breakToNext:['20:00','20:10']},
+ {number:8,parts:[['20:10','20:50'],['20:55','21:35']],breakToNext:null}
+];
+const state={schedule:[],selectedKey:'',weekOffset:0,timezone:'Europe/Minsk',refreshMs:300000,subgroup:'all'};
+const pad=n=>String(n).padStart(2,'0');
+const escapeHtml=value=>String(value??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+const keyToDateUTC=key=>new Date(`${key}T00:00:00Z`);
+const dateToKeyUTC=date=>`${date.getUTCFullYear()}-${pad(date.getUTCMonth()+1)}-${pad(date.getUTCDate())}`;
+const addDays=(key,days)=>{const d=keyToDateUTC(key);d.setUTCDate(d.getUTCDate()+days);return dateToKeyUTC(d)};
+const weekStart=key=>{const d=keyToDateUTC(key);const monday=(d.getUTCDay()+6)%7;d.setUTCDate(d.getUTCDate()-monday);return dateToKeyUTC(d)};
+const fmtDate=(key,options={})=>keyToDateUTC(key).toLocaleDateString('ru-RU',{...options,timeZone:'UTC'});
+const todayKey=()=>{const parts=new Intl.DateTimeFormat('en-CA',{timeZone:state.timezone,year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(new Date());const get=t=>parts.find(p=>p.type===t)?.value;return `${get('year')}-${get('month')}-${get('day')}`};
+const timeToEpoch=(dateKey,clock)=>Date.parse(`${dateKey}T${clock}:00+03:00`);
+const formatDuration=ms=>{const total=Math.max(0,Math.floor(ms/1000));return `${pad(Math.floor(total/3600))}:${pad(Math.floor(total/60)%60)}:${pad(total%60)}`};
+const subgroupAllowed=x=>state.subgroup==='all'||x.subgroup===state.subgroup;
+const dayLessons=key=>state.schedule.filter(x=>x.date===key&&subgroupAllowed(x)).sort((a,b)=>a.start.localeCompare(b.start)||a.subgroup.localeCompare(b.subgroup)||a.teacher.localeCompare(b.teacher));
+const slotKey=x=>`${x.date}|${x.start}|${x.end}|${x.discipline}`;
+const groupSlots=lessons=>{const map=new Map();for(const lesson of lessons){const k=slotKey(lesson);if(!map.has(k))map.set(k,{date:lesson.date,start:lesson.start,end:lesson.end,discipline:lesson.discipline,lessons:[]});map.get(k).lessons.push(lesson)}return [...map.values()].sort((a,b)=>`${a.date} ${a.start}`.localeCompare(`${b.date} ${b.start}`))};
+const plural=(n,f)=>{const n10=n%10,n100=n%100;if(n10===1&&n100!==11)return f[0];if(n10>=2&&n10<=4&&(n100<10||n100>=20))return f[1];return f[2]};
+const regimeForStart=start=>{for(const pair of REGIME){for(let i=0;i<pair.parts.length;i++){if(pair.parts[i][0]===start)return {pair,part:i+1,start:pair.parts[i][0],end:pair.parts[i][1]}}}return null};
+const mins=clock=>{const [h,m]=clock.split(':').map(Number);return h*60+m};
+const clockNow=()=>{const parts=new Intl.DateTimeFormat('en-GB',{timeZone:state.timezone,hour:'2-digit',minute:'2-digit',second:'2-digit',hourCycle:'h23'}).formatToParts(new Date());const get=t=>Number(parts.find(p=>p.type===t)?.value||0);return {hour:get('hour'),minute:get('minute'),second:get('second')};};
+const nowMinutes=()=>{const p=clockNow();return p.hour*60+p.minute+p.second/60};
+
+function renderRegime(){
+  document.getElementById('regimeGrid').innerHTML=REGIME.map(pair=>{
+    const breakText=pair.breakToNext?` · перерыв ${pair.breakToNext[0]}–${pair.breakToNext[1]}`:'';
+    return `<div class="regime-row"><div class="regime-num">${pair.number}</div><div class="regime-times">${pair.parts[0][0]}–${pair.parts[0][1]} · 5 мин · ${pair.parts[1][0]}–${pair.parts[1][1]}${breakText}</div></div>`;
+  }).join('');
+}
+
+function renderWeek(){
+  const base=weekStart(todayKey()),start=addDays(base,state.weekOffset*7),end=addDays(start,6);
+  document.getElementById('week').textContent=state.weekOffset===0?'Текущая неделя':`${fmtDate(start,{day:'numeric',month:'short'})} — ${fmtDate(end,{day:'numeric',month:'short'})}`;
+  document.getElementById('days').innerHTML=Array.from({length:7},(_,i)=>{
+    const key=addDays(start,i), classes=['day',key===state.selectedKey?'active':'',key===todayKey()?'today':''].filter(Boolean).join(' ');
+    const count=groupSlots(dayLessons(key)).length;
+    return `<button class="${classes}" data-key="${key}"><b>${escapeHtml(fmtDate(key,{weekday:'short'}))}</b><span class="day-date">${fmtDate(key,{day:'2-digit',month:'2-digit'})}</span><span class="day-meta"><span>${key===todayKey()?'Сегодня':''}</span><span>${count} ${plural(count,['занятие','занятия','занятий'])}</span></span></button>`;
+  }).join('');
+  document.querySelectorAll('.day').forEach(btn=>btn.addEventListener('click',()=>{state.selectedKey=btn.dataset.key;renderAll()}));
+}
+
+function renderSelectedDay(){
+  const key=state.selectedKey||todayKey(),isToday=key===todayKey();
+  document.getElementById('date').textContent=fmtDate(key,{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+  document.getElementById('dayTitle').textContent=isToday?'Сегодня':fmtDate(key,{weekday:'long'});
+  const arr=dayLessons(key), slots=groupSlots(arr);
+  document.getElementById('daySub').textContent=slots.length?`${slots.length} ${plural(slots.length,['занятие','занятия','занятий'])}`:'Занятий нет';
+  const now=Date.now();
+  document.getElementById('lessons').innerHTML=slots.length?slots.map(slot=>{
+    const slotStart=timeToEpoch(slot.date,slot.start),slotEnd=timeToEpoch(slot.date,slot.end);
+    const cls=slotEnd>now&&slotStart<=now?' current':slotStart>now&&slotStart-now<86400000?' next':'';
+    const badges=[];
+    if(cls.trim()==='current')badges.push('<span class="badge now">СЕЙЧАС</span>');
+    else if(cls.trim()==='next')badges.push('<span class="badge next">СЛЕДУЮЩАЯ</span>');
+    const regime=regimeForStart(slot.start); if(regime)badges.push(`<span class="badge period">${regime.pair.number}-я пара · ${regime.part}-я часть</span>`);
+    return `<div class="lesson${cls}"><div class="time"><div class="time-main">${escapeHtml(slot.start)}</div><small>до ${escapeHtml(slot.end)}</small></div><div><div class="name">${escapeHtml(slot.discipline)}</div>${slot.lessons.map(lesson=>`${lesson.subgroup?`<div class="subgroup">${escapeHtml(lesson.subgroup)}</div>`:''}<div class="teacher">👤 ${escapeHtml(lesson.teacher)}</div><div class="meta">📍 ${escapeHtml(lesson.room)}</div>`).join('')}<div class="lesson-badges">${badges.join('')}</div></div></div>`;
+  }).join(''):'<div class="empty">Пар на этот день нет</div>';
+}
+
+function getRegimeState(){
+  const t=nowMinutes();
+  const first=mins(REGIME[0].parts[0][0]);
+  const last=mins(REGIME.at(-1).parts[1][1]);
+  if(t<first)return {type:'before',start:REGIME[0].parts[0][0],end:REGIME[0].parts[0][0],label:`до начала ${REGIME[0].number}-й пары`,countTo:REGIME[0].parts[0][0],pair:1};
+  for(const pair of REGIME){
+    const p1=pair.parts[0],p2=pair.parts[1];
+    const p1s=mins(p1[0]),p1e=mins(p1[1]),p2s=mins(p2[0]),p2e=mins(p2[1]);
+    if(t>=p1s&&t<p1e)return {type:'part',pair:pair.number,part:1,start:p1[0],end:p1[1],countTo:p1[1],label:'до 5-минутного перерыва'};
+    if(t>=p1e&&t<p2s)return {type:'break',pair:pair.number,kind:'short',start:p1[1],end:p2[0],countTo:p2[0],label:'до конца 5-минутного перерыва'};
+    if(t>=p2s&&t<p2e)return {type:'part',pair:pair.number,part:2,start:p2[0],end:p2[1],countTo:pair.breakToNext?pair.breakToNext[0]:pair.parts[1][1],label:pair.breakToNext?'до следующего перерыва':'до окончания учебного дня'};
+    if(pair.breakToNext){
+      const bs=mins(pair.breakToNext[0]),be=mins(pair.breakToNext[1]);
+      if(t>=bs&&t<be)return {type:'break',pair:pair.number,kind:'long',start:pair.breakToNext[0],end:pair.breakToNext[1],countTo:pair.breakToNext[1],nextPair:pair.number+1,label:'до конца перерыва'};
+    }
+  }
+  return {type:'done',start:REGIME.at(-1).parts[1][1],end:REGIME.at(-1).parts[1][1],countTo:REGIME.at(-1).parts[1][1],label:'учебный день завершён'};
+}
+
+function currentSourceSlot(){
+  const today=todayKey(), now=Date.now();
+  const slots=groupSlots(state.schedule.filter(x=>x.date===today&&subgroupAllowed(x)));
+  let active=null,next=null;
+  for(const slot of slots){
+    const s=timeToEpoch(slot.date,slot.start),e=timeToEpoch(slot.date,slot.end);
+    if(s<=now&&now<e){active={...slot,startMs:s,endMs:e};break}
+    if(s>now&&!next)next={...slot,startMs:s,endMs:e};
+  }
+  return {active,next};
+}
+
+function renderFocus(){
+  const regime=getRegimeState(), today=todayKey(), now=Date.now(), source=currentSourceSlot();
+  const main=document.getElementById('state'), timer=document.getElementById('count'), label=document.getElementById('countLabel');
+  const focusName=document.getElementById('focusName'),focusKicker=document.getElementById('focusKicker'),focusItems=document.getElementById('focusItems');
+  document.getElementById('transitionStart').textContent=regime.start||'—';
+  document.getElementById('transitionEnd').textContent=regime.end||'—';
+  document.getElementById('periodBadge').textContent=regime.pair?`${regime.pair}-я пара${regime.part?` · ${regime.part}-я часть`:''}`:'—';
+  const target=regime.countTo?timeToEpoch(today,regime.countTo):now;
+  timer.textContent=formatDuration(Math.max(0,target-now));
+  label.textContent=regime.label||'—';
+  main.className=`state ${regime.type==='break'?'breaking':regime.type==='done'?'done':''}`;
+
+  if(source.active){
+    focusKicker.textContent='Сейчас по расписанию БГУ';
+    focusName.textContent=source.active.discipline;
+    focusItems.innerHTML=source.active.lessons.map(lesson=>`${lesson.subgroup?`<div class="focus-line">${escapeHtml(lesson.subgroup)}</div>`:''}<div class="focus-line">👤 ${escapeHtml(lesson.teacher)}</div><div class="focus-line muted">📍 ${escapeHtml(lesson.room)}</div>`).join('');
+  }else if(regime.type==='break'){
+    focusKicker.textContent='Перерыв';
+    if(source.next){
+      focusName.textContent=`Следующая: ${source.next.discipline}`;
+      focusItems.innerHTML=source.next.lessons.map(lesson=>`${lesson.subgroup?`<div class="focus-line">${escapeHtml(lesson.subgroup)}</div>`:''}<div class="focus-line">Начало · ${escapeHtml(source.next.start)}</div><div class="focus-line">👤 ${escapeHtml(lesson.teacher)}</div><div class="focus-line muted">📍 ${escapeHtml(lesson.room)}</div>`).join('');
+    }else{focusName.textContent='Следующая пара';focusItems.innerHTML='<div class="focus-line muted">По данным БГУ следующего занятия пока нет.</div>'}
+  }else if(source.next){
+    focusKicker.textContent='Следующее занятие по БГУ';
+    focusName.textContent=source.next.discipline;
+    focusItems.innerHTML=source.next.lessons.map(lesson=>`${lesson.subgroup?`<div class="focus-line">${escapeHtml(lesson.subgroup)}</div>`:''}<div class="focus-line">Начало · ${escapeHtml(source.next.start)}</div><div class="focus-line">👤 ${escapeHtml(lesson.teacher)}</div><div class="focus-line muted">📍 ${escapeHtml(lesson.room)}</div>`).join('');
+  }else{
+    focusKicker.textContent=regime.type==='done'?'Сегодня':'Режим учебных занятий';
+    focusName.textContent=regime.type==='done'?'На сегодня занятий больше нет':'В выбранный период нет занятия';
+    focusItems.innerHTML='<div class="focus-line muted">Таймер продолжает работать по официальному режиму занятий.</div>';
+  }
+
+  // The right panel uses the exact regime timer; the lesson list remains the source
+  // of truth for subjects, teachers and rooms coming from BSU.
+}
+
+function renderUpcoming(){
+  const nowMs=Date.now(), slots=groupSlots(state.schedule.filter(subgroupAllowed));
+  const future=slots.filter(slot=>timeToEpoch(slot.date,slot.end)>nowMs).slice(0,7);
+  document.getElementById('upcoming').innerHTML=future.length?future.map(slot=>`<div class="upcoming-item"><div><div class="up-date">${slot.date===todayKey()?'Сегодня':escapeHtml(fmtDate(slot.date,{weekday:'short'}))}</div><div class="up-time">${escapeHtml(slot.start)}</div></div><div><div class="up-name">${escapeHtml(slot.discipline)}</div><div class="up-meta">${slot.lessons.map(x=>[x.subgroup,x.teacher].filter(Boolean).join(' · ')).join(' / ')}</div><div class="up-meta">📍 ${escapeHtml(slot.lessons[0].room)}</div></div></div>`).join(''):'<div class="empty">Ближайших занятий нет</div>';
+}
+
+function renderSync(info){
+  const dot=document.getElementById('syncDot');
+  dot.className=`sync-dot ${info.status==='stale'?'stale':info.status==='error'?'error':''}`;
+  const fetched=info.fetchedAt?new Date(info.fetchedAt).toLocaleTimeString('ru-RU',{hour:'2-digit',minute:'2-digit'}):'—';
+  document.getElementById('syncText').textContent=info.status==='ok'?`Синхронизировано · ${fetched}`:info.status==='stale'?`Последние данные · ${fetched}`:'Не удалось синхронизировать';
+  document.getElementById('sourceStatus').textContent='Источник: БГУ';
+  document.getElementById('sourceUpdated').textContent=info.sourceUpdatedAt?`Обновление БГУ: ${info.sourceUpdatedAt}`:'Дата обновления не указана';
+  const title=info.groupTitle||'';
+  if(title){document.getElementById('groupKicker').textContent=title.replace(/^1курс\. /,'BSU · ')}
+  const err=document.getElementById('syncError');
+  if(info.error){err.textContent=info.error;err.classList.remove('hidden')}else{err.textContent='';err.classList.add('hidden')}
+}
+function renderAll(){renderWeek();renderSelectedDay();renderUpcoming();renderFocus()}
+
+async function loadSchedule(manual=false){
+  const btn=document.getElementById('refresh');
+  if(manual){btn.classList.add('refresh-spin');btn.disabled=true}
+  try{
+    const res=await fetch(`/api/schedule?ts=${Date.now()}`,{cache:'no-store'});
+    if(!res.ok)throw new Error(`HTTP ${res.status}`);
+    const info=await res.json();
+    state.schedule=Array.isArray(info.schedule)?info.schedule:[];
+    state.timezone=info.timezone||'Europe/Minsk';
+    state.refreshMs=info.refreshMs||300000;
+    if(!state.selectedKey)state.selectedKey=todayKey();
+    renderSync(info);renderAll();
+  }catch(err){
+    renderSync({status:'error',error:err.message});
+    document.getElementById('lessons').innerHTML='<div class="empty">Не удалось получить расписание. Проверь соединение с БГУ и сервер.</div>';
+  }finally{
+    if(manual)setTimeout(()=>{btn.classList.remove('refresh-spin');btn.disabled=false},350)
+  }
+}
+
+document.getElementById('prev').addEventListener('click',()=>{state.weekOffset-=1;state.selectedKey=addDays(state.selectedKey||todayKey(),-7);renderAll()});
+document.getElementById('next').addEventListener('click',()=>{state.weekOffset+=1;state.selectedKey=addDays(state.selectedKey||todayKey(),7);renderAll()});
+document.getElementById('refresh').addEventListener('click',()=>loadSchedule(true));
+document.getElementById('subgroup').addEventListener('change',e=>{state.subgroup=e.target.value;renderAll()});
+
+renderRegime();
+state.selectedKey=todayKey();
+loadSchedule();
+setInterval(renderFocus,1000);
+setInterval(renderUpcoming,30000);
+setInterval(loadSchedule,300000);
+</script>
+</body>
+</html>

@@ -1,0 +1,9 @@
+{
+  "name": "BSU Schedule 614",
+  "short_name": "BSU 614",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#080a0e",
+  "theme_color": "#080a0e",
+  "icons": []
+}
