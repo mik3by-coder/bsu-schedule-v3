@@ -45,6 +45,89 @@ header{display:flex;justify-content:space-between;align-items:flex-end;gap:24px;
   .filters{margin-bottom:9px}.card{padding:13px;border-radius:18px}.layout{gap:10px}.side-stack{display:flex}.lesson{grid-template-columns:73px minmax(0,1fr);gap:10px;padding:12px;border-radius:14px}.time-main{font-size:16px}.name{font-size:15px}.teacher,.meta{font-size:12px}.section-head{align-items:flex-start}.section-sub{max-width:170px}.current-card{padding:14px}.timer{font-size:36px}.transition{grid-template-columns:1fr 1fr}.focus-name{font-size:16px}.regime-grid{grid-template-columns:1fr}.upcoming-item{grid-template-columns:61px minmax(0,1fr)}
 }
 @media(max-width:390px){.day-grid{grid-template-columns:1fr}.day-meta{font-size:10px}.lesson{grid-template-columns:66px minmax(0,1fr)}.timer{font-size:32px}}
+
+/* Mobile-first refinement: compact, touch-friendly layout */
+@media (max-width: 700px){
+  html,body{overflow-x:hidden}
+  body{font-size:14px;background:#080a0e}
+  .wrap{width:100%;max-width:100%;padding:12px 12px 28px}
+  header{display:block;margin:0 0 10px;padding:2px 2px 0}
+  .kicker{font-size:10px;letter-spacing:.12em}
+  .title{font-size:28px;line-height:1.05;letter-spacing:-.045em;margin:2px 0 5px}
+  .date{font-size:12px;color:#a1aab7;line-height:1.25}
+  .header-right{display:none}
+
+  .toolbar{display:flex;flex-direction:row;align-items:center;gap:8px;margin:0 0 9px}
+  .week-nav{display:grid;grid-template-columns:40px minmax(0,1fr) 40px;align-items:center;gap:6px;flex:1;min-width:0}
+  .week-title{min-width:0;width:100%;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .tool-btn{height:40px;min-width:40px;padding:0 10px;border-radius:12px}
+  .week-nav .tool-btn{padding:0;font-size:20px}
+  #refresh{width:40px;padding:0;display:grid;place-items:center;flex:0 0 40px}
+  .refresh-text{display:none}
+  .refresh-icon{font-size:19px;line-height:1}
+
+  .day-grid{display:flex;gap:7px;overflow-x:auto;overflow-y:hidden;scroll-snap-type:x proximity;padding:1px 1px 7px;margin:0 -1px 4px;scrollbar-width:none}
+  .day-grid::-webkit-scrollbar{display:none}
+  .day{flex:0 0 76px;min-width:76px;padding:10px 8px 9px;border-radius:13px;text-align:center;scroll-snap-align:center}
+  .day b{font-size:11px;line-height:1.05}
+  .day-date{font-size:14px;margin-top:3px}
+  .day-meta{display:block;margin-top:5px;font-size:9px;line-height:1.1}
+  .day-meta span:first-child{display:block;min-height:10px}
+  .day-meta span:last-child{display:block;color:#7f8997;margin-top:3px}
+  .day.active{transform:none}
+
+  .filters{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:2px 0 9px;padding:0}
+  .filter-label{font-size:11px;color:#8f99a7}
+  .select{height:36px;min-width:96px;padding:0 27px 0 10px;border-radius:10px;font-size:13px}
+
+  .layout{display:flex;flex-direction:column;gap:9px}
+  .layout aside{order:-1}
+  .card{width:100%;border-radius:17px;padding:12px;background:#11151b;border-color:#222a34;box-shadow:none}
+  .layout > section.card{background:transparent;border:0;padding:0}
+  .section-head{margin:0 2px 7px;align-items:center;gap:8px}
+  .section-head h2{font-size:16px}
+  .section-sub{font-size:11px;max-width:none;text-align:right}
+  .lesson-list{gap:7px}
+  .lesson{grid-template-columns:64px minmax(0,1fr);gap:10px;padding:12px 11px;border-radius:14px;background:#0f1318}
+  .time-main{font-size:16px}
+  .time small{font-size:10px;margin-top:2px}
+  .name{font-size:14px;line-height:1.28}
+  .teacher,.meta{font-size:11.5px;line-height:1.35;margin-top:4px}
+  .subgroup{font-size:10px;padding:3px 6px;margin-top:5px}
+  .lesson-badges{gap:5px;margin-top:6px}
+  .badge{font-size:9px;min-height:20px;padding:2px 6px}
+  .foot{display:none}
+
+  /* The phone should show one clear status card, not several nested panels. */
+  aside.card{background:transparent;border:0;padding:0}
+  .side-stack{display:flex;gap:8px}
+  .current-card{padding:14px 13px;border-radius:17px;border-color:#29313d;background:linear-gradient(180deg,#151a22,#10141a)}
+  .state-row{gap:8px}
+  .state{font-size:10px;letter-spacing:.08em}
+  .timer{font-size:40px;line-height:1.02;margin-top:7px;letter-spacing:-.05em}
+  .timer-label{font-size:11px;margin:4px 0 11px}
+  .transition{gap:6px;margin-bottom:11px}
+  .transition-box{padding:8px 9px;border-radius:10px}
+  .transition-label{font-size:9px}
+  .transition-value{font-size:12px;margin-top:2px}
+  .focus-card{padding-top:11px}
+  .focus-kicker{font-size:9px}
+  .focus-name{font-size:15px;line-height:1.25;margin-top:3px}
+  .focus-line{font-size:11.5px;line-height:1.35;margin-top:4px}
+
+  /* Secondary desktop-only information is intentionally hidden on mobile. */
+  .upcoming,.regime{display:none}
+  .status-row{margin:7px 3px 0;padding-top:2px;border-top:0;display:flex;justify-content:flex-start;gap:6px;font-size:9px;opacity:.72}
+  #sourceStatus{display:none}
+  #sourceUpdated{white-space:nowrap}
+  .error-text{font-size:10px;margin:5px 3px 0}
+}
+
+@media (max-width: 430px){
+  .wrap{padding-left:10px;padding-right:10px}
+  .day{flex-basis:72px;min-width:72px}
+  .timer{font-size:38px}
+}
 </style>
 </head>
 <body>
@@ -67,13 +150,13 @@ header{display:flex;justify-content:space-between;align-items:flex-end;gap:24px;
     <div class="week-title" id="week">Текущая неделя</div>
     <button class="tool-btn" id="next" type="button" aria-label="Следующая неделя">→</button>
   </div>
-  <button class="tool-btn" id="refresh" type="button">↻ Обновить</button>
+  <button class="tool-btn" id="refresh" type="button" aria-label="Обновить расписание"><span class="refresh-icon">↻</span><span class="refresh-text">Обновить</span></button>
 </div>
 
 <div class="day-grid" id="days" aria-label="Дни недели"></div>
 
 <div class="filters">
-  <span class="filter-label">Подгруппа:</span>
+  <span class="filter-label">Подгруппа</span>
   <select class="select" id="subgroup" aria-label="Выбор подгруппы">
     <option value="all">Все</option>
     <option value="1 подгр">1 подгр</option>
@@ -170,9 +253,10 @@ function renderWeek(){
   document.getElementById('days').innerHTML=Array.from({length:7},(_,i)=>{
     const key=addDays(start,i), classes=['day',key===state.selectedKey?'active':'',key===todayKey()?'today':''].filter(Boolean).join(' ');
     const count=groupSlots(dayLessons(key)).length;
-    return `<button class="${classes}" data-key="${key}"><b>${escapeHtml(fmtDate(key,{weekday:'short'}))}</b><span class="day-date">${fmtDate(key,{day:'2-digit',month:'2-digit'})}</span><span class="day-meta"><span>${key===todayKey()?'Сегодня':''}</span><span>${count} ${plural(count,['занятие','занятия','занятий'])}</span></span></button>`;
+    return `<button class="${classes}" data-key="${key}" aria-current="${key===state.selectedKey?'date':'false'}"><b>${escapeHtml(fmtDate(key,{weekday:'short'}))}</b><span class="day-date">${fmtDate(key,{day:'2-digit',month:'2-digit'})}</span><span class="day-meta"><span>${key===todayKey()?'Сегодня':''}</span><span>${count} ${plural(count,['пара','пары','пар'])}</span></span></button>`;
   }).join('');
   document.querySelectorAll('.day').forEach(btn=>btn.addEventListener('click',()=>{state.selectedKey=btn.dataset.key;renderAll()}));
+  if(state.weekOffset===0){const todayBtn=document.querySelector('.day.today'); if(todayBtn) requestAnimationFrame(()=>todayBtn.scrollIntoView({inline:'center',block:'nearest',behavior:'smooth'}));}
 }
 
 function renderSelectedDay(){
